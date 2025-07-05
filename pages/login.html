@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | UR Career Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #FFF2E0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .auth-container {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #0B1D51;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #03A6A1;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #02827f;
+    }
+    .switch {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 0.9rem;
+    }
+    .switch a {
+      color: #898AC4;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container" id="authBox">
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email" />
+    <input type="password" id="loginPassword" placeholder="Password" />
+    <button id="loginBtn">Login</button>
+    <div class="switch">
+      Don't have an account? <a href="#" onclick="switchToSignup()">Sign up</a>
+    </div>
+  </div>
+
+  <div class="auth-container" id="signupBox" style="display: none">
+    <h2>Sign Up</h2>
+    <input type="text" id="signupName" placeholder="Full Name" />
+    <input type="email" id="signupEmail" placeholder="Email" />
+    <input type="password" id="signupPassword" placeholder="Password" />
+    <button id="signupBtn">Sign Up</button>
+    <div class="switch">
+      Already have an account? <a href="#" onclick="switchToLogin()">Login</a>
+    </div>
+  </div>
+
+  <script type="module" src="../js/auth.js"></script>
+</body>
+</html>

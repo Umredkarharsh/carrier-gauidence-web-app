@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Sample Data</title>
+</head>
+<body>
+  <h2>Upload Sample Data to Firestore</h2>
+  <button onclick="uploadData()">Upload</button>
+  <p id="status"></p>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import {
+      initializeApp
+    } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
+    import {
+      getFirestore, doc, setDoc, writeBatch
+    } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDerJZ2bIRi7dkncfDUbD7pZ9s2rrmDT5M",
+      authDomain: "carrier-guidence-527ce.firebaseapp.com",
+      projectId: "carrier-guidence-527ce",
+      storageBucket: "carrier-guidence-527ce.firebasestorage.app",
+      messagingSenderId: "945020999908",
+      appId: "1:945020999908:web:85762cb258bec57c9eb4f1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    window.uploadData = async function () {
+      const status = document.getElementById("status");
+      status.textContent = "Uploading...";
+      const batch = writeBatch(db);
+
+      const users = {
+        u001: {
+          fullName: "Anshu Jamare",
+          email: "anshu@example.com",
+          role: "student",
+          academicRecords: { cgpa: 3.5 },
+          createdAt: new Date().toISOString()
+        }
+      };
+
+      const colleges = {
+        C001: {
+          name: "MIT Pune",
+          location: "India",
+          fees: 120000,
+          courses: ["CS", "IT", "MBA"],
+          eligibility: {
+            minCGPA: 3.0,
+            exams: ["JEE"]
+          }
+        },
+        C002: {
+          name: "Stanford University",
+          location: "USA",
+          fees: 70000,
+          courses: ["Engineering", "Business"],
+          eligibility: {
+            minCGPA: 3.6,
+            exams: ["SAT"]
+          }
+        }
+      };
+
+      const testResults = {
+        T001: {
+          userId: "u001",
+          totalScore: 12,
+          maxScore: 15,
+          timestamp: new Date().toISOString()
+        }
+      };
+
+      for (const [id, data] of Object.entries(users)) {
+        batch.set(doc(db, 'users', id), data);
+      }
+      for (const [id, data] of Object.entries(colleges)) {
+        batch.set(doc(db, 'colleges', id), data);
+      }
+      for (const [id, data] of Object.entries(testResults)) {
+        batch.set(doc(db, 'testResults', id), data);
+      }
+
+      try {
+        await batch.commit();
+        status.textContent = "✅ Sample data uploaded successfully.";
+      } catch (error) {
+        status.textContent = "❌ Error uploading data: " + error.message;
+      }
+    }
+  </script>
+</body>
+</html>

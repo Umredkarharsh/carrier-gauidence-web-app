@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Applications | UR Career Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #FFF2E0;
+      padding: 2rem;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #0B1D51;
+      margin-bottom: 2rem;
+    }
+
+    .application-list {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .app-item {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-left: 5px solid #03A6A1;
+    }
+
+    .app-item h3 {
+      margin: 0 0 0.5rem;
+      color: #0B1D51;
+    }
+
+    .app-item p {
+      margin: 0.3rem 0;
+      font-size: 0.95rem;
+    }
+
+    .status {
+      font-weight: bold;
+    }
+
+    .status.pending {
+      color: orange;
+    }
+
+    .status.accepted {
+      color: green;
+    }
+
+    .status.rejected {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>My Applications</h1>
+  <div id="applicationList" class="application-list">
+    <p>Loading applications...</p>
+  </div>
+
+  <script type="module">
+    import {
+      auth,
+      db,
+      collection,
+      query,
+      where,
+      getDocs,
+      doc,
+      getDoc,
+      onAuthStateChanged
+    } from '../js/firebase.js';
+
+    const list = document.getElementById('applicationList');
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      try {
+        const q = query(collection(db, "applications"), where("userId", "==", user.uid));
+        const snap = await getDocs(q);
+        list.innerHTML = "";
+
+        if (snap.empty) {
+          list.innerHTML = "<p>You haven't applied to any colleges yet.</p>";
+          return;
+        }
+
+        for (const docSnap of snap.docs) {
+          const data = docSnap.data();
+
+          const collegeRef = doc(db, "colleges", data.collegeId);
+          const collegeSnap = await getDoc(collegeRef);
+          const collegeData = collegeSnap.exists() ? collegeSnap.data() : {};
+
+          const div = document.createElement("div");
+          div.className = "app-item";
+          div.innerHTML = `
+            <h3>${collegeData.name || data.collegeName || "College"}</h3>
+            <p><strong>Status:</strong> <span class="status ${data.status || 'pending'}">${(data.status || 'pending').toUpperCase()}</span></p>
+            <p><strong>Applied On:</strong> ${data.appliedAt?.toDate().toLocaleString() || "N/A"}</p>
+            ${data.quizScore !== undefined ? `<p><strong>Quiz Score:</strong> ${data.quizScore} / ${data.total}</p>` : ""}
+          `;
+          list.appendChild(div);
+        }
+      } catch (err) {
+        console.error("Error loading applications:", err);
+        list.innerHTML = "<p>Error loading applications.</p>";
+      }
+    });
+  </script>
+</body>
+</html>

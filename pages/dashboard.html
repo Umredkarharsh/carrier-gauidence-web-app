@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | UR Career Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --teal: #03A6A1;
+      --navy: #0B1D51;
+      --lavender: #C0C9EE;
+      --light-bg: #FFF2E0;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: var(--light-bg);
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      min-height: 100vh;
+    }
+    /* Sidebar Styles */
+    .sidebar {
+      background: var(--navy);
+      color: white;
+      padding: 2rem 1rem;
+    }
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+    .sidebar-header img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar-menu li {
+      margin-bottom: 1rem;
+    }
+    .sidebar-menu a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background: rgba(255,255,255,0.1);
+    }
+    /* Main Content */
+    .main-content {
+      padding: 2rem;
+    }
+    .greeting {
+      color: var(--navy);
+      margin-bottom: 2rem;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .stat-card h3 {
+      margin-top: 0;
+      color: var(--navy);
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--teal);
+      margin: 0.5rem 0;
+    }
+    /* College Recommendations */
+    .section-title {
+      color: var(--navy);
+      border-bottom: 2px solid var(--lavender);
+      padding-bottom: 0.5rem;
+    }
+    .college-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .college-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      transition: transform 0.3s;
+    }
+    .college-card:hover {
+      transform: translateY(-5px);
+    }
+    .college-img {
+      height: 120px;
+      background: var(--lavender);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--navy);
+    }
+    .college-body {
+      padding: 1rem;
+    }
+    .college-name {
+      margin: 0;
+      color: var(--navy);
+    }
+    .college-location {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .college-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+    .college-fees {
+      font-weight: bold;
+      color: var(--teal);
+    }
+    .view-btn {
+      background: var(--teal);
+      color: white;
+      border: none;
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <img id="userAvatar" src="../assets/default-avatar.png" alt="User">
+        <div>
+          <div id="userName">Loading...</div>
+          <small>Student</small>
+        </div>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+        <li><a href="college-list.html"><i class="fas fa-university"></i> Colleges</a></li>
+        <li><a href="apptitude.html"><i class="fas fa-clipboard-list"></i> Aptitude Test</a></li>
+        <li><a href="myapplication.html"><i class="fas fa-file-alt"></i> My Applications</a></li>
+        <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <h1 class="greeting">Welcome back, <span id="greetingName">Student</span>!</h1>
+      
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Recommended Colleges</h3>
+          <div class="stat-value" id="recommendedCount">0</div>
+          <p>Based on your profile</p>
+        </div>
+        <div class="stat-card">
+          <h3>Applications Sent</h3>
+          <div class="stat-value" id="applicationsCount">0</div>
+          <p>Your active applications</p>
+        </div>
+        <div class="stat-card">
+          <h3>Test Score</h3>
+          <div class="stat-value" id="testScore">-</div>
+          <p>Latest aptitude test</p>
+        </div> 
+      </div>
+
+      <!-- College Recommendations -->
+      <h2 class="section-title"><i class="fas fa-star"></i> Recommended For You</h2>
+      <div class="college-grid" id="recommendedColleges">
+        <!-- Dynamically populated -->
+      </div>
+
+      <!-- Recent Activity -->
+      <h2 class="section-title" style="margin-top: 3rem;"><i class="fas fa-history"></i> Recent Activity</h2>
+      <div id="recentActivity">
+        <!-- Dynamically populated -->
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../js/dashboard.js"></script>
+</body>
+</html>

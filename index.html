@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UR Career Guide | Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0B1D51;
+      --primary-light: #1A2D72;
+      --secondary: #03A6A1;
+      --secondary-light: #04C2BC;
+      --accent: #FF7E5F;
+      --bg: #FFF2E0;
+      --white: #ffffff;
+      --text-light: #F8F9FA;
+      --text-dark: #212529;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text-dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--primary);
+      color: var(--text-light);
+      padding: 1.5rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .logo i {
+      font-size: 1.8rem;
+      color: var(--secondary);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    nav {
+      display: flex;
+      gap: 1.8rem;
+    }
+
+    nav a {
+      color: var(--text-light);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      position: relative;
+    }
+
+    nav a:hover {
+      color: var(--secondary);
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--secondary);
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 6rem 5%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,1) 100%);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero h2 {
+      color: var(--primary);
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      color: #555;
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      font-size: 1.1rem;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: var(--secondary);
+      color: #fff;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn:hover {
+      background: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn i {
+      font-size: 1.1rem;
+    }
+
+    .btn-secondary {
+      background: var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary-light);
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: var(--primary);
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    .features {
+      padding: 5rem 5%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      color: var(--secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-card h3 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 1.5rem;
+      }
+
+      .logo {
+        margin-bottom: 1rem;
+      }
+
+      nav {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .hero {
+        padding: 4rem 1.5rem;
+      }
+
+      .hero h2 {
+        font-size: 2rem;
+      }
+
+      .buttons {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <i class="fas fa-graduation-cap"></i>
+      <h1>UR Career Guide</h1>
+    </div>
+    <nav>
+      <a href="pages/login.html"><i class="fas fa-user-graduate"></i> Student</a>
+      <a href="pages/collegelogin.html"><i class="fas fa-university"></i> College</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Discover Your Perfect Career Path</h2>
+      <p>
+        Welcome to UR Career Guide – your comprehensive platform for aptitude assessment, college exploration, and seamless applications. 
+        Connect with top institutions or find your ideal candidates in one unified space.
+      </p>
+      <div class="buttons">
+        <a href="pages/login.html" class="btn">
+          <i class="fas fa-sign-in-alt"></i> Student Login
+        </a>
+        <a href="pages/collegelogin.html" class="btn btn-secondary">
+          <i class="fas fa-sign-in-alt"></i> College Login
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <h3>Aptitude Testing</h3>
+      <p>Take our comprehensive aptitude tests to discover your strengths and ideal career paths.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i class="fas fa-search"></i>
+      </div>
+      <h3>College Search</h3>
+      <p>Explore hundreds of colleges with detailed information about programs, fees, and requirements.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i class="fas fa-paper-plane"></i>
+      </div>
+      <h3>Easy Applications</h3>
+      <p>Apply to your preferred colleges directly through our platform with just a few clicks.</p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 UR Career Guide. All rights reserved.
+  </footer>
+</body>
+</html>

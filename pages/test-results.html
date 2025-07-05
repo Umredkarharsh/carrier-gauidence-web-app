@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Test Result | UR Career Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #FFF2E0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .result-box {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+    h2 {
+      color: #0B1D51;
+      margin-bottom: 1rem;
+    }
+    .score {
+      font-size: 2.2rem;
+      color: #03A6A1;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .percentage {
+      font-size: 1.2rem;
+      color: #0B1D51;
+      margin-bottom: 1rem;
+    }
+    .message {
+      font-size: 0.95rem;
+      color: #333;
+      margin-bottom: 1.8rem;
+      line-height: 1.5;
+    }
+    .dashboard-btn {
+      background: #03A6A1;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .dashboard-btn:hover {
+      background: #028b88;
+    }
+  </style>
+</head>
+<body>
+  <div class="result-box">
+    <h2>Your Test Result</h2>
+    <div class="score" id="scoreDisplay">Loading...</div>
+    <div class="percentage" id="percentageDisplay"></div>
+    <div class="message" id="messageDisplay">Fetching your result...</div>
+    <a href="dashboard.html" class="dashboard-btn">Back to Dashboard</a>
+  </div>
+
+  <script type="module">
+    import {
+      auth,
+      db,
+      doc,
+      getDoc,
+      onAuthStateChanged
+    } from '../js/firebase.js';
+
+    const scoreEl = document.getElementById("scoreDisplay");
+    const percentageEl = document.getElementById("percentageDisplay");
+    const messageEl = document.getElementById("messageDisplay");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        alert("Please log in to view your results.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      try {
+        const resultDoc = await getDoc(doc(db, "aptitude_results", user.uid));
+
+        if (!resultDoc.exists()) {
+          scoreEl.textContent = "Not Found";
+          percentageEl.textContent = "";
+          messageEl.textContent = "No test result found for your account.";
+          return;
+        }
+
+        const data = resultDoc.data();
+        const score = data.score ?? 0;
+        const total = data.total ?? 10;
+        const percentage = Math.round((score / total) * 100);
+        const timestamp = data.timestamp?.seconds
+          ? new Date(data.timestamp.seconds * 1000)
+          : new Date();
+
+        scoreEl.textContent = `${score} / ${total}`;
+        percentageEl.textContent = `${percentage}% Correct`;
+        messageEl.innerHTML = `
+          Completed on ${timestamp.toLocaleString()}<br>
+          ${getMessageFromScore(percentage)}
+        `;
+      } catch (err) {
+        console.error("Error loading result:", err);
+        scoreEl.textContent = "Error";
+        percentageEl.textContent = "";
+        messageEl.textContent = "There was a problem loading your result.";
+      }
+    });
+
+    function getMessageFromScore(p) {
+      if (p >= 90) return "🌟 Excellent! You’ve nailed it.";
+      if (p >= 70) return "✅ Great job! You’re above average.";
+      if (p >= 50) return "⚠️ Decent attempt. Keep improving.";
+      return "🔁 Don’t give up! Practice makes perfect.";
+    }
+  </script>
+</body>
+</html>

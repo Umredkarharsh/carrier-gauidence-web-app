@@ -1,0 +1,83 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8" /> <title>Seed Colleges to Firestore</title> <script type="module"> import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"; import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDerJZ2bIRi7dkncfDUbD7pZ9s2rrmDT5M",
+  authDomain: "carrier-guidence-527ce.firebaseapp.com",
+  projectId: "carrier-guidence-527ce",
+  storageBucket: "carrier-guidence-527ce.firebasestorage.app",
+  messagingSenderId: "945020999908",
+  appId: "1:945020999908:web:85762cb258bec57c9eb4f1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const colleges = [
+  {
+    name: "Indian Institute of Technology Delhi",
+    location: "New Delhi, India",
+    fees: 240000,
+    courses: ["B.Tech", "M.Tech", "PhD"],
+    eligibility: {
+      minCGPA: 3.5,
+      exams: ["JEE Advanced"]
+    }
+  },
+  {
+    name: "Narsee Monjee Institute of Management Studies",
+    location: "Mumbai, India",
+    fees: 180000,
+    courses: ["MBA", "BBA", "B.Com"],
+    eligibility: {
+      minCGPA: 3.0,
+      exams: ["NMAT"]
+    }
+  },
+  {
+    name: "Harvard University",
+    location: "Cambridge, USA",
+    fees: 50000,
+    courses: ["MBA", "CS", "Biology"],
+    eligibility: {
+      minCGPA: 3.7,
+      exams: ["GMAT", "TOEFL"]
+    }
+  },
+  {
+    name: "Indian Institute of Science",
+    location: "Bangalore, India",
+    fees: 220000,
+    courses: ["M.Sc", "PhD", "Engineering"],
+    eligibility: {
+      minCGPA: 3.5,
+      exams: ["GATE", "JEE"]
+    }
+  },
+  {
+    name: "University of Oxford",
+    location: "Oxford, UK",
+    fees: 40000,
+    courses: ["Law", "Philosophy", "Science"],
+    eligibility: {
+      minCGPA: 3.6,
+      exams: ["IELTS"]
+    }
+  }
+];
+
+async function seedColleges() {
+  try {
+    const colRef = collection(db, "colleges");
+    for (const college of colleges) {
+      await addDoc(colRef, college);
+      console.log(`Added: ${college.name}`);
+    }
+    alert("Colleges successfully added to Firestore!");
+  } catch (err) {
+    console.error("Error adding colleges:", err);
+    alert("Error occurred. Check console.");
+  }
+}
+
+window.seedColleges = seedColleges;
+</script> </head> <body style="font-family: sans-serif; padding: 2rem;"> <h2>Seed College Data</h2> <p>This will insert sample colleges into your Firestore database.</p> <button onclick="seedColleges()" style="padding: 10px 20px; font-size: 16px;">Seed Colleges</button> </body> </html>

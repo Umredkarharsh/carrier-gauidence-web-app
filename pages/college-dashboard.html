@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>College Dashboard | UR Career Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0B1D51;
+            --secondary: #03A6A1;
+            --bg: #FFF2E0;
+            --white: #fff;
+            --shadow: rgba(0,0,0,0.05);
+            --text-light: #f8f9fa;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            background: var(--primary);
+            color: var(--text-light);
+            padding: 2rem 1rem;
+            position: relative;
+        }
+        
+        .sidebar h2 {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        
+        .sidebar h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: var(--secondary);
+        }
+        
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .sidebar ul a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar ul a:hover,
+        .sidebar ul a.active {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(4px);
+        }
+        
+        .sidebar ul a i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main {
+            padding: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .header h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+        
+        .card {
+            background: var(--white);
+            padding: 1.8rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .card h3 {
+            margin: 0 0 1.5rem;
+            color: var(--primary);
+            font-size: 1.3rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .card h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--secondary);
+        }
+        
+        .application-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        
+        .app-item {
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .app-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .app-item h4 {
+            margin: 0 0 0.5rem;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .app-item p {
+            margin: 0.3rem 0;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .app-item strong {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            color: #FFA500;
+        }
+        
+        .status-accepted {
+            color: #03A6A1;
+        }
+        
+        .status-rejected {
+            color: #FF5252;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                padding: 1rem;
+            }
+            
+            .main {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <h2>UR College Portal</h2>
+            <ul>
+                <li>
+                    <a href="#" class="active">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="college-profile.html">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="main">
+            <div class="header">
+                <h1>Welcome, <span id="collegeName">College</span></h1>
+            </div>
+            
+            <div class="card">
+                <h3>Applications Received</h3>
+                <div id="applicationsList" class="application-list">
+                    <p>Loading applications...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script type="module">
+                import { 
+                    auth, 
+                    db, 
+                    doc, 
+                    getDoc, 
+                    collection, 
+                    query, 
+                    where, 
+                    getDocs, 
+                    onAuthStateChanged, 
+                    signOut,
+                    updateDoc 
+                } from '../js/firebase.js';
+
+                const logoutBtn = document.getElementById("logoutBtn");
+                const collegeNameEl = document.getElementById("collegeName");
+                const applicationsList = document.getElementById("applicationsList");
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (!user) {
+                        window.location.href = "collegelogin.html";
+                        return;
+                    }
+
+                    const collegeDoc = await getDoc(doc(db, "colleges", user.uid));
+                    if (collegeDoc.exists()) {
+                        const data = collegeDoc.data();
+                        collegeNameEl.textContent = data.name || "College";
+                    }
+
+                    loadApplications(user.uid);
+                });
+
+                async function loadApplications(collegeId) {
+                    try {
+                        const q = query(collection(db, "applications"), where("collegeId", "==", collegeId));
+                        const snap = await getDocs(q);
+                        applicationsList.innerHTML = "";
+
+                        if (snap.empty) {
+                            applicationsList.innerHTML = `
+                                <div style="text-align: center; padding: 2rem; color: #666;">
+                                    <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                    <p>No applications received yet.</p>
+                                </div>
+                            `;
+                            return;
+                        }
+
+                        snap.forEach(app => {
+                            const data = app.data();
+                            const item = document.createElement("div");
+                            item.className = "app-item";
+                            const status = data.status || "pending";
+
+                            item.innerHTML = `
+                                <h4>${data.studentName || "Unnamed Student"}</h4>
+                                <p><strong>Email:</strong> ${data.studentEmail || "N/A"}</p>
+                                <p><strong>Status:</strong> <span class="status-${status}">${status.toUpperCase()}</span></p>
+                                <p><strong>Applied On:</strong> ${data.appliedAt?.toDate().toLocaleDateString() || "N/A"}</p>
+                                <p><strong>CGPA:</strong> ${data.studentCGPA || "N/A"}</p>
+                                ${status === "pending" ? `
+                                    <button class="approve-btn" data-id="${app.id}">Approve</button>
+                                    <button class="reject-btn" data-id="${app.id}">Reject</button>
+                                ` : ""}
+                            `;
+
+                            applicationsList.appendChild(item);
+                        });
+
+                        document.querySelectorAll(".approve-btn").forEach(btn => {
+                            btn.addEventListener("click", () => updateStatus(btn.dataset.id, "approved"));
+                        });
+                        document.querySelectorAll(".reject-btn").forEach(btn => {
+                            btn.addEventListener("click", () => updateStatus(btn.dataset.id, "rejected"));
+                        });
+
+                    } catch (err) {
+                        console.error("Error loading applications:", err);
+                        applicationsList.innerHTML = `
+                            <div style="text-align: center; padding: 2rem; color: #FF5252;">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                <p>Error loading applications. Please try again later.</p>
+                            </div>
+                        `;
+                    }
+                }
+
+                async function updateStatus(appId, status) {
+                    try {
+                        await updateDoc(doc(db, "applications", appId), { status });
+                        alert(`Application marked as ${status.toUpperCase()}`);
+                        loadApplications(auth.currentUser.uid);
+                    } catch (err) {
+                        console.error("Status update error:", err);
+                        alert("Failed to update application status.");
+                    }
+                }
+
+                logoutBtn.addEventListener("click", async () => {
+                    try {
+                        await signOut(auth);
+                        window.location.href = "collegelogin.html";
+                    } catch (err) {
+                        console.error("Logout error:", err);
+                        alert("Failed to logout. Please try again.");
+                    }
+                });
+    </script>
+
+</body>
+</html>

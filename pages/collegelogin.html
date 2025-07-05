@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>College Portal | UR Career Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0B1D51;
+            --secondary: #03A6A1;
+            --accent: #FF7E5F;
+            --light-bg: #FFF2E0;
+            --card-bg: #FFFFFF;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light-bg);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--secondary);
+        }
+        
+        h2 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            position: relative;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--secondary);
+        }
+        
+        label {
+            display: block;
+            margin: 1.2rem 0 0.5rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(3, 166, 161, 0.1);
+        }
+        
+        button {
+            width: 100%;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.9rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        button:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .switch-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+        
+        .switch-link:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .auth-container {
+                padding: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container" id="collegeLoginBox">
+        <h2>College Login</h2>
+        <label for="collegeLoginEmail">Email</label>
+        <input type="email" id="collegeLoginEmail" required />
+        <label for="collegeLoginPassword">Password</label>
+        <input type="password" id="collegeLoginPassword" required />
+        <button id="collegeLoginBtn">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+        <div class="switch-link" onclick="switchToCollegeSignup()">
+            Don't have an account? Sign up
+        </div>
+    </div>
+
+    <div class="auth-container hidden" id="collegeSignupBox">
+        <h2>College Signup</h2>
+        <label for="collegeName">College Name</label>
+        <input type="text" id="collegeName" required />
+        <label for="collegeSignupEmail">Email</label>
+        <input type="email" id="collegeSignupEmail" required />
+        <label for="collegeSignupPassword">Password</label>
+        <input type="password" id="collegeSignupPassword" required />
+        <button id="collegeSignupBtn">
+            <i class="fas fa-user-plus"></i> Sign Up
+        </button>
+        <div class="switch-link" onclick="switchToCollegeLogin()">
+            Already have an account? Login
+        </div>
+    </div>
+
+    <script type="module" src="../js/college-auth.js"></script>
+</body>
+</html>

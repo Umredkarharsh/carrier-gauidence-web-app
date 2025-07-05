@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Apply to College | UR Career Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #FFF2E0;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .form-container {
+      background: #fff;
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    h2 {
+      color: #0B1D51;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin: 1rem 0 0.5rem;
+      color: #0B1D51;
+      font-weight: 600;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-family: 'Poppins', sans-serif;
+      transition: 0.2s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #03A6A1;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(3,166,161,0.2);
+    }
+
+    button {
+      margin-top: 2rem;
+      background: #03A6A1;
+      color: white;
+      padding: 0.9rem 1.2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background: #028b88;
+    }
+
+    .hint {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 0.3rem;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Apply to College</h2>
+    <form id="applicationForm">
+      <input type="hidden" id="collegeId" />
+      <label for="studentName">Your Name</label>
+      <input type="text" id="studentName" required />
+
+      <label for="studentEmail">Email</label>
+      <input type="email" id="studentEmail" required />
+
+      <label for="studentCGPA">CGPA (out of 10)</label>
+      <input type="number" id="studentCGPA" min="0" max="10" step="0.1" required />
+
+      <label for="sop">Statement of Purpose (optional)</label>
+      <textarea id="sop" rows="4" placeholder="Tell us why you're interested..."></textarea>
+
+      <button type="submit">Submit Application</button>
+    </form>
+  </div>
+
+    <script type="module">
+        import { 
+            auth, 
+            db, 
+            doc, 
+            getDoc, 
+            setDoc, 
+            onAuthStateChanged 
+        } from '../js/firebase.js';
+
+        // DOM Elements
+        const form = document.getElementById("applicationForm");
+
+        // Get college ID from URL
+        const params = new URLSearchParams(window.location.search);
+        const collegeId = params.get('id');
+
+        // Validate college ID
+        if (!collegeId) {
+            alert("Invalid application link. College ID missing.");
+            window.location.href = "college-list.html";
+            throw new Error("College ID missing in URL");
+        }
+
+        // Handle authentication state
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                alert("Please login to submit an application");
+                window.location.href = `login.html?redirect=application.html?id=${collegeId}`;
+                return;
+            }
+
+            // Load student profile data if available
+            try {
+                const studentDoc = await getDoc(doc(db, "students", user.uid));
+                if (studentDoc.exists()) {
+                    const studentData = studentDoc.data();
+                    document.getElementById("studentName").value = studentData.name || "";
+                    document.getElementById("studentEmail").value = user.email || "";
+                    document.getElementById("studentCGPA").value = studentData.cgpa || "";
+                }
+            } catch (err) {
+                console.error("Error loading student data:", err);
+            }
+
+            // Form submission handler
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                
+                // Get form values
+                const studentName = document.getElementById("studentName").value.trim();
+                const studentEmail = document.getElementById("studentEmail").value.trim();
+                const studentCGPA = parseFloat(document.getElementById("studentCGPA").value);
+                const sop = document.getElementById("sop").value.trim();
+
+                // Validate inputs
+                if (!studentName || !studentEmail || isNaN(studentCGPA) || studentCGPA < 0 || studentCGPA > 10) {
+                    alert("Please fill in all required fields correctly.\nCGPA must be between 0 and 10.");
+                    return;
+                }
+
+                try {
+                    // Show loading state
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                    submitBtn.disabled = true;
+
+                    // Get aptitude result if available
+                    let aptitudeResult = null;
+                    try {
+                        const resultDoc = await getDoc(doc(db, "aptitude_results", user.uid));
+                        if (resultDoc.exists()) {
+                            const resultData = resultDoc.data();
+                            aptitudeResult = {
+                                score: resultData.score,
+                                total: resultData.total,
+                                percentage: resultData.percentage,
+                                testDate: resultData.testDate?.toDate() || null
+                            };
+                        }
+                    } catch (err) {
+                        console.warn("Could not load aptitude results:", err);
+                    }
+
+                    // Create application document
+                    const applicationId = `${user.uid}_${collegeId}`;
+                    const applicationData = {
+                        userId: user.uid,
+                        collegeId,
+                        studentName,
+                        studentEmail,
+                        studentCGPA,
+                        sop,
+                        aptitudeResult,
+                        status: "pending",
+                        appliedAt: new Date(),
+                        lastUpdated: new Date()
+                    };
+
+                    // Save application to Firestore
+                    await setDoc(doc(db, "applications", applicationId), applicationData);
+
+                    // Show success and redirect
+                    alert("Application submitted successfully!");
+                    window.location.href = "dashboard.html";
+                    
+                } catch (err) {
+                    console.error("Error submitting application:", err);
+                    alert(`Application failed: ${err.message}`);
+                    
+                    // Reset button state
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

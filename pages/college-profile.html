@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Complete College Profile | UR Career Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0B1D51;
+            --secondary: #03A6A1;
+            --accent: #FF7E5F;
+            --light-bg: #FFF2E0;
+            --card-bg: #FFFFFF;
+            --text-dark: #333;
+            --text-medium: #555;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light-bg);
+            margin: 0;
+            padding: 2rem;
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--secondary);
+        }
+        
+        h2 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            position: relative;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--secondary);
+        }
+        
+        label {
+            display: block;
+            margin: 1.5rem 0 0.7rem;
+            font-weight: 500;
+            color: var(--primary);
+            position: relative;
+        }
+        
+        label::after {
+            content: '*';
+            color: var(--accent);
+            margin-left: 4px;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(3, 166, 161, 0.1);
+        }
+        
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 2rem;
+            width: 100%;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        
+        button:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .hint {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+            margin-top: 0.4rem;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1.5rem;
+            }
+            
+            .container {
+                padding: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Complete Your College Profile</h2>
+        <form id="collegeProfileForm">
+            <div class="form-group">
+                <label for="location">College Location</label>
+                <input type="text" id="location" required placeholder="e.g. Bangalore, Karnataka" />
+                <p class="hint">City and State where your college is located</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="fees">Annual Fees (INR)</label>
+                <input type="number" id="fees" required placeholder="e.g. 150000" />
+                <p class="hint">Approximate annual tuition fees in Indian Rupees</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="courses">Courses Offered</label>
+                <input type="text" id="courses" required placeholder="e.g. B.Tech, MBA, B.Sc" />
+                <p class="hint">Separate multiple courses with commas</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="minCGPA">Minimum CGPA Required</label>
+                <input type="number" step="0.1" id="minCGPA" required placeholder="e.g. 7.5" min="0" max="10" />
+                <p class="hint">Minimum CGPA cutoff for admissions (scale of 10)</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="exams">Entrance Exams Accepted</label>
+                <input type="text" id="exams" required placeholder="e.g. JEE, NEET, CAT" />
+                <p class="hint">Separate multiple exams with commas</p>
+            </div>
+            
+            <button type="submit">
+                <i class="fas fa-save"></i> Save Profile
+            </button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { auth, db, doc, setDoc, onAuthStateChanged } from '../js/firebase.js';
+        
+        const form = document.getElementById('collegeProfileForm');
+        
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "college-auth.html";
+                return;
+            }
+            
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Get form values
+                const location = document.getElementById('location').value.trim();
+                const fees = parseInt(document.getElementById('fees').value);
+                const courses = document.getElementById('courses').value
+                    .split(',')
+                    .map(c => c.trim())
+                    .filter(c => c !== '');
+                const minCGPA = parseFloat(document.getElementById('minCGPA').value);
+                const exams = document.getElementById('exams').value
+                    .split(',')
+                    .map(e => e.trim())
+                    .filter(e => e !== '');
+                
+                // Validate inputs
+                if (isNaN(fees) || isNaN(minCGPA) || courses.length === 0 || exams.length === 0) {
+                    alert("Please fill all fields with valid data");
+                    return;
+                }
+                
+                try {
+                    await setDoc(doc(db, "colleges", user.uid), {
+                        location,
+                        fees,
+                        courses,
+                        eligibility: { 
+                            minCGPA,
+                            exams 
+                        },
+                        profileCompleted: true,
+                        lastUpdated: new Date()
+                    }, { merge: true });
+                    
+                    alert("Profile updated successfully!");
+                    window.location.href = "college-dashboard.html";
+                } catch (err) {
+                    console.error("Error updating profile:", err);
+                    alert(`Failed to update profile: ${err.message}`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>College Details | UR Career Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0B1D51;
+      --secondary: #03A6A1;
+      --accent: #FF7E5F;
+      --light-bg: #FFF2E0;
+      --card-bg: #FFFFFF;
+      --text-dark: #333;
+      --text-medium: #555;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--light-bg);
+      margin: 0;
+      padding: 2rem;
+      color: var(--text-dark);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 6px;
+      height: 100%;
+      background: var(--secondary);
+    }
+
+    h2 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      font-size: 1.8rem;
+    }
+
+    .location {
+      font-size: 0.95rem;
+      color: var(--text-medium);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .fees {
+      color: var(--secondary);
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin: 1.5rem 0;
+      padding: 0.8rem;
+      background: rgba(3, 166, 161, 0.08);
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title {
+      margin-top: 2.2rem;
+      font-size: 1.2rem;
+      color: var(--primary);
+      font-weight: 600;
+      border-bottom: 2px solid rgba(11, 29, 81, 0.1);
+      padding-bottom: 0.4rem;
+    }
+
+    .info {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .info::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--secondary);
+      font-weight: bold;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 2rem;
+      padding: 0.8rem 1.8rem;
+      background: var(--secondary);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .btn:hover {
+      background: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="collegeDetails">
+    <h2>Loading college details...</h2>
+  </div>
+
+  <script type="module">
+    import { db, doc, getDoc } from '../js/firebase.js';
+
+    const container = document.getElementById('collegeDetails');
+    const params = new URLSearchParams(window.location.search);
+    const collegeId = params.get('id');
+
+    if (!collegeId) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 2rem;">
+          <h2 style="color: var(--accent);">Invalid Request</h2>
+          <p>Missing college ID in URL.</p>
+          <a href="college-list.html" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+      `;
+    } else {
+      loadCollegeDetails(collegeId);
+    }
+
+    async function loadCollegeDetails(id) {
+      try {
+        const docSnap = await getDoc(doc(db, 'colleges', id));
+        if (!docSnap.exists()) {
+          container.innerHTML = `
+            <h2>College Not Found</h2>
+            <p>We couldn't find this college.</p>
+            <a href="college-list.html" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
+          `;
+          return;
+        }
+
+        const data = docSnap.data();
+        container.innerHTML = `
+          <h2>${data.name}</h2>
+          <p class="location"><i class="fas fa-map-marker-alt"></i> ${data.location}</p>
+          <div class="fees"><i class="fas fa-rupee-sign"></i> ₹${data.fees?.toLocaleString()} / year</div>
+
+          <div class="section-title"><i class="fas fa-book"></i> Courses Offered</div>
+          <div class="info">${data.courses?.join(', ') || 'Not available'}</div>
+
+          <div class="section-title"><i class="fas fa-check-circle"></i> Eligibility</div>
+          <div class="info">Minimum CGPA: ${data.eligibility?.minCGPA || 'N/A'}</div>
+          <div class="info">Exams: ${data.eligibility?.exams?.join(', ') || 'N/A'}</div>
+
+          <a href="application.html?id=${id}" class="btn"><i class="fas fa-paper-plane"></i> Apply Now</a>
+          <a href="college-list.html" class="btn"><i class="fas fa-arrow-left"></i> Back to List</a>
+        `;
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = `
+          <h2>Error</h2>
+          <p>Something went wrong while loading the college details.</p>
+          <a href="college-list.html" class="btn"><i class="fas fa-arrow-left"></i> Back</a>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
